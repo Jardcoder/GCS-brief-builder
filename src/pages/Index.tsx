@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight, Play, Pause } from 'lucide-react';
 
@@ -90,7 +89,7 @@ const slides = [
   },
   {
     id: 7,
-    layout: 'brand',
+    layout: 'brand-enhanced',
     title: 'Tone & Visual Style',
     tone: {
       title: 'Tone & Voice',
@@ -98,18 +97,21 @@ const slides = [
     },
     typography: {
       title: 'Typography',
-      items: ['Headlines: Bebas Neue', 'Body Text: Noto Sans']
+      items: [
+        { name: 'Headlines', font: 'Bebas Neue', example: 'GLOBAL CONNECT SOLUTIONS' },
+        { name: 'Body Text', font: 'Noto Sans', example: 'Professional remote teams that extend your capabilities' }
+      ]
     },
     colors: {
       title: 'Brand Colors',
       palette: [
-        { name: 'Turquoise', color: '#00C4CC' },
-        { name: 'Vibrant Yellow', color: '#FFD700' },
-        { name: 'Charcoal Gray', color: '#333333' },
-        { name: 'Off-White', color: '#F8F8F8' }
+        { name: 'Turquoise', color: '#00C4CC', usage: 'Primary CTAs & Headers' },
+        { name: 'Vibrant Yellow', color: '#FFD700', usage: 'Accents & Highlights' },
+        { name: 'Charcoal Gray', color: '#333333', usage: 'Body Text & Icons' },
+        { name: 'Off-White', color: '#F8F8F8', usage: 'Backgrounds & Cards' }
       ]
     },
-    bgColor: 'bg-[#F8F8F8]'
+    bgColor: 'bg-white'
   },
   {
     id: 8,
@@ -358,49 +360,74 @@ const Presentation = () => {
           </div>
         );
 
-      case 'brand':
+      case 'brand-enhanced':
         return (
-          <div className="flex flex-col justify-center h-full px-12 md:px-24">
-            <h1 className="text-5xl md:text-7xl font-bold mb-16 text-[#333333]" style={{ fontFamily: '"Bebas Neue", sans-serif' }}>
+          <div className="flex flex-col justify-center h-full px-8 md:px-16">
+            <h1 className="text-5xl md:text-7xl font-bold mb-12 text-[#333333] text-center" style={{ fontFamily: '"Bebas Neue", sans-serif' }}>
               {slide.title}
             </h1>
-            <div className="grid md:grid-cols-3 gap-12">
-              <div>
-                <h2 className="text-2xl font-bold mb-4 text-[#00C4CC]" style={{ fontFamily: '"Bebas Neue", sans-serif' }}>
-                  {slide.tone.title}
-                </h2>
-                <p className="text-lg text-[#333333]" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
-                  {slide.tone.content}
-                </p>
-              </div>
-              <div>
-                <h2 className="text-2xl font-bold mb-4 text-[#00C4CC]" style={{ fontFamily: '"Bebas Neue", sans-serif' }}>
-                  {slide.typography.title}
-                </h2>
-                <ul className="space-y-2">
-                  {slide.typography.items.map((item, idx) => (
-                    <li key={idx} className="text-lg text-[#333333]" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div>
-                <h2 className="text-2xl font-bold mb-4 text-[#00C4CC]" style={{ fontFamily: '"Bebas Neue", sans-serif' }}>
+            
+            <div className="space-y-16">
+              {/* Color Palette Section */}
+              <div className="text-center">
+                <h2 className="text-3xl font-bold mb-8 text-[#00C4CC]" style={{ fontFamily: '"Bebas Neue", sans-serif' }}>
                   {slide.colors.title}
                 </h2>
-                <div className="space-y-3">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                   {slide.colors.palette.map((color, idx) => (
-                    <div key={idx} className="flex items-center space-x-3">
+                    <div key={idx} className="flex flex-col items-center space-y-4">
                       <div 
-                        className="w-6 h-6 rounded-full border-2 border-gray-300"
+                        className="w-24 h-24 md:w-32 md:h-32 rounded-2xl shadow-lg border-4 border-white"
                         style={{ backgroundColor: color.color }}
                       ></div>
-                      <span className="text-lg text-[#333333]" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
-                        {color.name}: {color.color}
-                      </span>
+                      <div className="text-center">
+                        <h3 className="text-lg font-bold text-[#333333] mb-1" style={{ fontFamily: '"Bebas Neue", sans-serif' }}>
+                          {color.name}
+                        </h3>
+                        <p className="text-sm font-mono bg-gray-100 px-2 py-1 rounded text-[#333333]">
+                          {color.color}
+                        </p>
+                        <p className="text-xs text-gray-600 mt-2" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
+                          {color.usage}
+                        </p>
+                      </div>
                     </div>
                   ))}
+                </div>
+              </div>
+
+              {/* Typography Section */}
+              <div className="grid md:grid-cols-2 gap-12">
+                <div className="text-center">
+                  <h2 className="text-3xl font-bold mb-6 text-[#00C4CC]" style={{ fontFamily: '"Bebas Neue", sans-serif' }}>
+                    Typography
+                  </h2>
+                  <div className="space-y-8">
+                    {slide.typography.items.map((item, idx) => (
+                      <div key={idx} className="bg-[#F8F8F8] p-6 rounded-lg">
+                        <h3 className="text-lg font-bold text-[#333333] mb-3" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
+                          {item.name}: {item.font}
+                        </h3>
+                        <div 
+                          className="text-2xl md:text-3xl text-[#333333]"
+                          style={{ fontFamily: item.font === 'Bebas Neue' ? '"Bebas Neue", sans-serif' : '"Noto Sans", sans-serif' }}
+                        >
+                          {item.example}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="text-center">
+                  <h2 className="text-3xl font-bold mb-6 text-[#00C4CC]" style={{ fontFamily: '"Bebas Neue", sans-serif' }}>
+                    {slide.tone.title}
+                  </h2>
+                  <div className="bg-gradient-to-br from-[#00C4CC] to-[#FFD700] p-8 rounded-lg text-white">
+                    <p className="text-xl md:text-2xl leading-relaxed" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
+                      {slide.tone.content}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
