@@ -202,17 +202,33 @@ const slides = [
 const Presentation = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
   const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % slides.length);
+    if (isTransitioning) return;
+    setIsTransitioning(true);
+    setTimeout(() => {
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
+      setIsTransitioning(false);
+    }, 150);
   };
 
   const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
+    if (isTransitioning) return;
+    setIsTransitioning(true);
+    setTimeout(() => {
+      setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
+      setIsTransitioning(false);
+    }, 150);
   };
 
   const goToSlide = (index) => {
-    setCurrentSlide(index);
+    if (isTransitioning || index === currentSlide) return;
+    setIsTransitioning(true);
+    setTimeout(() => {
+      setCurrentSlide(index);
+      setIsTransitioning(false);
+    }, 150);
   };
 
   const togglePlay = () => {
@@ -236,10 +252,10 @@ const Presentation = () => {
       case 'title':
         return (
           <div className="flex flex-col items-center justify-center h-full text-center text-white px-8">
-            <h1 className="text-6xl md:text-8xl font-bold mb-8 leading-tight" style={{ fontFamily: '"Bebas Neue", sans-serif' }}>
+            <h1 className={`text-6xl md:text-8xl font-bold mb-8 leading-tight transition-all duration-700 ${!isTransitioning ? 'animate-fade-in translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`} style={{ fontFamily: '"Bebas Neue", sans-serif' }}>
               {slide.title}
             </h1>
-            <p className="text-2xl md:text-3xl opacity-90" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
+            <p className={`text-2xl md:text-3xl opacity-90 transition-all duration-700 delay-300 ${!isTransitioning ? 'animate-fade-in translate-y-0 opacity-90' : 'translate-y-4 opacity-0'}`} style={{ fontFamily: '"Noto Sans", sans-serif' }}>
               {slide.subtitle}
             </p>
           </div>
@@ -248,10 +264,10 @@ const Presentation = () => {
       case 'content':
         return (
           <div className="flex flex-col justify-center h-full px-12 md:px-24">
-            <h1 className="text-5xl md:text-7xl font-bold mb-12 text-[#333333]" style={{ fontFamily: '"Bebas Neue", sans-serif' }}>
+            <h1 className={`text-5xl md:text-7xl font-bold mb-12 text-[#333333] transition-all duration-700 ${!isTransitioning ? 'animate-fade-in translate-x-0 opacity-100' : 'translate-x-8 opacity-0'}`} style={{ fontFamily: '"Bebas Neue", sans-serif' }}>
               {slide.title}
             </h1>
-            <p className="text-2xl md:text-3xl leading-relaxed text-[#333333]" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
+            <p className={`text-2xl md:text-3xl leading-relaxed text-[#333333] transition-all duration-700 delay-200 ${!isTransitioning ? 'animate-fade-in translate-x-0 opacity-100' : 'translate-x-8 opacity-0'}`} style={{ fontFamily: '"Noto Sans", sans-serif' }}>
               {slide.content}
             </p>
           </div>
@@ -260,12 +276,12 @@ const Presentation = () => {
       case 'split':
         return (
           <div className="flex flex-col justify-center h-full px-12 md:px-24">
-            <h1 className="text-5xl md:text-7xl font-bold mb-16 text-[#333333]" style={{ fontFamily: '"Bebas Neue", sans-serif' }}>
+            <h1 className={`text-5xl md:text-7xl font-bold mb-16 text-[#333333] transition-all duration-700 ${!isTransitioning ? 'animate-fade-in translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`} style={{ fontFamily: '"Bebas Neue", sans-serif' }}>
               {slide.title}
             </h1>
             <div className="grid md:grid-cols-2 gap-12">
               {slide.sections.map((section, idx) => (
-                <div key={idx} className="space-y-6">
+                <div key={idx} className={`space-y-6 transition-all duration-700 ${!isTransitioning ? 'animate-fade-in translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`} style={{ transitionDelay: `${300 + idx * 200}ms` }}>
                   <h2 className="text-3xl font-bold text-[#00C4CC]" style={{ fontFamily: '"Bebas Neue", sans-serif' }}>
                     {section.heading}
                   </h2>
@@ -281,12 +297,12 @@ const Presentation = () => {
       case 'bullets':
         return (
           <div className="flex flex-col justify-center h-full px-12 md:px-24">
-            <h1 className="text-5xl md:text-7xl font-bold mb-16 text-[#333333]" style={{ fontFamily: '"Bebas Neue", sans-serif' }}>
+            <h1 className={`text-5xl md:text-7xl font-bold mb-16 text-[#333333] transition-all duration-700 ${!isTransitioning ? 'animate-fade-in translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`} style={{ fontFamily: '"Bebas Neue", sans-serif' }}>
               {slide.title}
             </h1>
             <div className="space-y-12">
               {slide.bullets.map((bullet, idx) => (
-                <div key={idx} className="border-l-4 border-[#FFD700] pl-8">
+                <div key={idx} className={`border-l-4 border-[#FFD700] pl-8 transition-all duration-700 ${!isTransitioning ? 'animate-fade-in translate-x-0 opacity-100' : 'translate-x-8 opacity-0'}`} style={{ transitionDelay: `${300 + idx * 200}ms` }}>
                   <h3 className="text-2xl font-bold mb-4 text-[#00C4CC]" style={{ fontFamily: '"Bebas Neue", sans-serif' }}>
                     {bullet.title}
                   </h3>
@@ -302,11 +318,11 @@ const Presentation = () => {
       case 'objectives':
         return (
           <div className="flex flex-col justify-center h-full px-12 md:px-24">
-            <h1 className="text-5xl md:text-7xl font-bold mb-16 text-[#333333]" style={{ fontFamily: '"Bebas Neue", sans-serif' }}>
+            <h1 className={`text-5xl md:text-7xl font-bold mb-16 text-[#333333] transition-all duration-700 ${!isTransitioning ? 'animate-fade-in translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`} style={{ fontFamily: '"Bebas Neue", sans-serif' }}>
               {slide.title}
             </h1>
             <div className="space-y-12">
-              <div className="bg-[#00C4CC] p-8 rounded-lg text-white">
+              <div className={`bg-[#00C4CC] p-8 rounded-lg text-white transition-all duration-700 ${!isTransitioning ? 'animate-fade-in scale-100 opacity-100' : 'scale-95 opacity-0'}`} style={{ transitionDelay: '300ms' }}>
                 <h2 className="text-3xl font-bold mb-6" style={{ fontFamily: '"Bebas Neue", sans-serif' }}>
                   {slide.primary.title}
                 </h2>
@@ -314,13 +330,13 @@ const Presentation = () => {
                   {slide.primary.content}
                 </p>
               </div>
-              <div>
+              <div className={`transition-all duration-700 ${!isTransitioning ? 'animate-fade-in translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`} style={{ transitionDelay: '500ms' }}>
                 <h2 className="text-3xl font-bold mb-6 text-[#333333]" style={{ fontFamily: '"Bebas Neue", sans-serif' }}>
                   {slide.secondary.title}
                 </h2>
                 <ul className="space-y-4">
                   {slide.secondary.items.map((item, idx) => (
-                    <li key={idx} className="flex items-start">
+                    <li key={idx} className={`flex items-start transition-all duration-500 ${!isTransitioning ? 'animate-fade-in translate-x-0 opacity-100' : 'translate-x-4 opacity-0'}`} style={{ transitionDelay: `${700 + idx * 100}ms` }}>
                       <span className="text-[#FFD700] text-2xl mr-4">•</span>
                       <span className="text-xl text-[#333333]" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
                         {item}
@@ -336,13 +352,13 @@ const Presentation = () => {
       case 'features':
         return (
           <div className="flex flex-col justify-center h-full px-12 md:px-24">
-            <h1 className="text-5xl md:text-7xl font-bold mb-16 text-[#333333]" style={{ fontFamily: '"Bebas Neue", sans-serif' }}>
+            <h1 className={`text-5xl md:text-7xl font-bold mb-16 text-[#333333] transition-all duration-700 ${!isTransitioning ? 'animate-fade-in translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`} style={{ fontFamily: '"Bebas Neue", sans-serif' }}>
               {slide.title}
             </h1>
             <div className="grid md:grid-cols-2 gap-6">
               {slide.features.map((feature, idx) => (
-                <div key={idx} className="flex items-center space-x-4 p-4 bg-[#F8F8F8] rounded-lg">
-                  <div className="w-8 h-8 bg-[#00C4CC] rounded-full flex items-center justify-center text-white font-bold">
+                <div key={idx} className={`flex items-center space-x-4 p-4 bg-[#F8F8F8] rounded-lg transition-all duration-500 hover:scale-105 ${!isTransitioning ? 'animate-fade-in translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`} style={{ transitionDelay: `${300 + idx * 100}ms` }}>
+                  <div className="w-8 h-8 bg-[#00C4CC] rounded-full flex items-center justify-center text-white font-bold transition-all duration-300 hover:bg-[#FFD700] hover:text-[#333333]">
                     {idx + 1}
                   </div>
                   <span className="text-lg text-[#333333]" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
@@ -357,21 +373,21 @@ const Presentation = () => {
       case 'brand-enhanced':
         return (
           <div className="flex flex-col justify-center h-full px-8 md:px-16">
-            <h1 className="text-5xl md:text-7xl font-bold mb-12 text-[#333333] text-center" style={{ fontFamily: '"Bebas Neue", sans-serif' }}>
+            <h1 className={`text-5xl md:text-7xl font-bold mb-12 text-[#333333] text-center transition-all duration-700 ${!isTransitioning ? 'animate-fade-in scale-100 opacity-100' : 'scale-95 opacity-0'}`} style={{ fontFamily: '"Bebas Neue", sans-serif' }}>
               {slide.title}
             </h1>
             
             <div className="space-y-16">
               {/* Color Palette Section */}
-              <div className="text-center">
+              <div className={`text-center transition-all duration-700 ${!isTransitioning ? 'animate-fade-in translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`} style={{ transitionDelay: '300ms' }}>
                 <h2 className="text-3xl font-bold mb-8 text-[#00C4CC]" style={{ fontFamily: '"Bebas Neue", sans-serif' }}>
                   {slide.colors.title}
                 </h2>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                   {slide.colors.palette.map((color, idx) => (
-                    <div key={idx} className="flex flex-col items-center space-y-4">
+                    <div key={idx} className={`flex flex-col items-center space-y-4 transition-all duration-500 hover:scale-110 ${!isTransitioning ? 'animate-fade-in translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`} style={{ transitionDelay: `${500 + idx * 150}ms` }}>
                       <div 
-                        className="w-24 h-24 md:w-32 md:h-32 rounded-2xl shadow-lg border-4 border-white"
+                        className="w-24 h-24 md:w-32 md:h-32 rounded-2xl shadow-lg border-4 border-white transition-transform duration-300 hover:rotate-6"
                         style={{ backgroundColor: color.color }}
                       ></div>
                       <div className="text-center">
@@ -391,14 +407,14 @@ const Presentation = () => {
               </div>
 
               {/* Typography Section */}
-              <div className="grid md:grid-cols-2 gap-12">
+              <div className={`grid md:grid-cols-2 gap-12 transition-all duration-700 ${!isTransitioning ? 'animate-fade-in translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`} style={{ transitionDelay: '800ms' }}>
                 <div className="text-center">
                   <h2 className="text-3xl font-bold mb-6 text-[#00C4CC]" style={{ fontFamily: '"Bebas Neue", sans-serif' }}>
                     Typography
                   </h2>
                   <div className="space-y-8">
                     {slide.typography.items.map((item, idx) => (
-                      <div key={idx} className="bg-[#F8F8F8] p-6 rounded-lg">
+                      <div key={idx} className={`bg-[#F8F8F8] p-6 rounded-lg transition-all duration-500 hover:shadow-lg ${!isTransitioning ? 'animate-fade-in scale-100 opacity-100' : 'scale-95 opacity-0'}`} style={{ transitionDelay: `${1000 + idx * 200}ms` }}>
                         <h3 className="text-lg font-bold text-[#333333] mb-3" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
                           {item.name}: {item.font}
                         </h3>
@@ -417,7 +433,7 @@ const Presentation = () => {
                   <h2 className="text-3xl font-bold mb-6 text-[#00C4CC]" style={{ fontFamily: '"Bebas Neue", sans-serif' }}>
                     {slide.tone.title}
                   </h2>
-                  <div className="bg-gradient-to-br from-[#00C4CC] to-[#FFD700] p-8 rounded-lg text-white">
+                  <div className={`bg-gradient-to-br from-[#00C4CC] to-[#FFD700] p-8 rounded-lg text-white transition-all duration-700 hover:scale-105 ${!isTransitioning ? 'animate-fade-in scale-100 opacity-100' : 'scale-95 opacity-0'}`} style={{ transitionDelay: '1200ms' }}>
                     <p className="text-xl md:text-2xl leading-relaxed" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
                       {slide.tone.content}
                     </p>
@@ -431,16 +447,16 @@ const Presentation = () => {
       case 'inspiration':
         return (
           <div className="flex flex-col justify-center h-full px-12 md:px-24">
-            <h1 className="text-5xl md:text-7xl font-bold mb-8 text-[#333333]" style={{ fontFamily: '"Bebas Neue", sans-serif' }}>
+            <h1 className={`text-5xl md:text-7xl font-bold mb-8 text-[#333333] transition-all duration-700 ${!isTransitioning ? 'animate-fade-in translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`} style={{ fontFamily: '"Bebas Neue", sans-serif' }}>
               {slide.title}
             </h1>
-            <p className="text-xl mb-12 text-[#00C4CC]" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
+            <p className={`text-xl mb-12 text-[#00C4CC] transition-all duration-700 ${!isTransitioning ? 'animate-fade-in translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`} style={{ fontFamily: '"Noto Sans", sans-serif', transitionDelay: '200ms' }}>
               {slide.subtitle}
             </p>
             <div className="grid md:grid-cols-2 gap-4">
               {slide.features.map((feature, idx) => (
-                <div key={idx} className="flex items-center space-x-4 p-3">
-                  <div className="w-6 h-6 bg-[#FFD700] rounded-full flex items-center justify-center">
+                <div key={idx} className={`flex items-center space-x-4 p-3 transition-all duration-500 hover:bg-[#F8F8F8] rounded-lg ${!isTransitioning ? 'animate-fade-in translate-x-0 opacity-100' : 'translate-x-4 opacity-0'}`} style={{ transitionDelay: `${400 + idx * 100}ms` }}>
+                  <div className="w-6 h-6 bg-[#FFD700] rounded-full flex items-center justify-center transition-transform duration-300 hover:scale-125">
                     <span className="text-[#333333] text-sm font-bold">✓</span>
                   </div>
                   <span className="text-lg text-[#333333]" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
@@ -455,19 +471,19 @@ const Presentation = () => {
       case 'sitemap-combined':
         return (
           <div className="flex flex-col justify-center h-full px-12 md:px-24">
-            <h1 className="text-5xl md:text-7xl font-bold mb-16 text-[#333333]" style={{ fontFamily: '"Bebas Neue", sans-serif' }}>
+            <h1 className={`text-5xl md:text-7xl font-bold mb-16 text-[#333333] transition-all duration-700 ${!isTransitioning ? 'animate-fade-in translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`} style={{ fontFamily: '"Bebas Neue", sans-serif' }}>
               {slide.title}
             </h1>
             <div className="grid md:grid-cols-2 gap-16">
-              <div className="space-y-12">
+              <div className={`space-y-12 transition-all duration-700 ${!isTransitioning ? 'animate-fade-in translate-x-0 opacity-100' : 'translate-x-8 opacity-0'}`} style={{ transitionDelay: '300ms' }}>
                 {slide.leftColumn.map((section, idx) => (
-                  <div key={idx}>
+                  <div key={idx} className={`transition-all duration-500 ${!isTransitioning ? 'animate-fade-in translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`} style={{ transitionDelay: `${500 + idx * 200}ms` }}>
                     <h2 className="text-3xl font-bold mb-6 text-[#00C4CC]" style={{ fontFamily: '"Bebas Neue", sans-serif' }}>
                       {section.title}
                     </h2>
                     <ul className="space-y-3 ml-8">
                       {section.items.map((item, itemIdx) => (
-                        <li key={itemIdx} className="flex items-start">
+                        <li key={itemIdx} className={`flex items-start transition-all duration-300 hover:translate-x-2 ${!isTransitioning ? 'animate-fade-in translate-x-0 opacity-100' : 'translate-x-4 opacity-0'}`} style={{ transitionDelay: `${700 + idx * 200 + itemIdx * 100}ms` }}>
                           <span className="text-[#FFD700] text-xl mr-4">•</span>
                           <span className="text-lg text-[#333333]" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
                             {item}
@@ -479,15 +495,15 @@ const Presentation = () => {
                 ))}
               </div>
               
-              <div className="space-y-12">
+              <div className={`space-y-12 transition-all duration-700 ${!isTransitioning ? 'animate-fade-in translate-x-0 opacity-100' : 'translate-x-8 opacity-0'}`} style={{ transitionDelay: '400ms' }}>
                 {slide.rightColumn.map((section, idx) => (
-                  <div key={idx}>
+                  <div key={idx} className={`transition-all duration-500 ${!isTransitioning ? 'animate-fade-in translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`} style={{ transitionDelay: `${600 + idx * 200}ms` }}>
                     <h2 className="text-3xl font-bold mb-6 text-[#00C4CC]" style={{ fontFamily: '"Bebas Neue", sans-serif' }}>
                       {section.title}
                     </h2>
                     <ul className="space-y-3 ml-8">
                       {section.items.map((item, itemIdx) => (
-                        <li key={itemIdx} className="flex items-start">
+                        <li key={itemIdx} className={`flex items-start transition-all duration-300 hover:translate-x-2 ${!isTransitioning ? 'animate-fade-in translate-x-0 opacity-100' : 'translate-x-4 opacity-0'}`} style={{ transitionDelay: `${800 + idx * 200 + itemIdx * 100}ms` }}>
                           <span className="text-[#FFD700] text-xl mr-4">•</span>
                           <span className="text-lg text-[#333333]" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
                             {item}
@@ -533,18 +549,18 @@ const Presentation = () => {
       case 'final':
         return (
           <div className="flex flex-col justify-center h-full px-12 md:px-24">
-            <h1 className="text-5xl md:text-7xl font-bold mb-16 text-[#333333]" style={{ fontFamily: '"Bebas Neue", sans-serif' }}>
+            <h1 className={`text-5xl md:text-7xl font-bold mb-16 text-[#333333] transition-all duration-700 ${!isTransitioning ? 'animate-fade-in translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`} style={{ fontFamily: '"Bebas Neue", sans-serif' }}>
               {slide.title}
             </h1>
             <div className="grid md:grid-cols-2 gap-16">
               {slide.sections.map((section, idx) => (
-                <div key={idx} className="bg-white p-8 rounded-lg shadow-lg border-l-4 border-[#00C4CC]">
+                <div key={idx} className={`bg-white p-8 rounded-lg shadow-lg border-l-4 border-[#00C4CC] transition-all duration-700 hover:shadow-xl hover:scale-105 ${!isTransitioning ? 'animate-fade-in translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`} style={{ transitionDelay: `${300 + idx * 300}ms` }}>
                   <h2 className="text-3xl font-bold mb-6 text-[#333333]" style={{ fontFamily: '"Bebas Neue", sans-serif' }}>
                     {section.title}
                   </h2>
                   <ul className="space-y-4">
                     {section.items.map((item, itemIdx) => (
-                      <li key={itemIdx} className="flex items-start">
+                      <li key={itemIdx} className={`flex items-start transition-all duration-400 ${!isTransitioning ? 'animate-fade-in translate-x-0 opacity-100' : 'translate-x-4 opacity-0'}`} style={{ transitionDelay: `${600 + idx * 300 + itemIdx * 150}ms` }}>
                         <span className="text-[#FFD700] text-xl mr-4">•</span>
                         <span className="text-lg text-[#333333]" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
                           {item}
@@ -566,23 +582,23 @@ const Presentation = () => {
   return (
     <div className="min-h-screen bg-gray-900 relative overflow-hidden">
       {/* Slide Container */}
-      <div className={`h-screen transition-all duration-500 ${slide.bgColor}`}>
+      <div className={`h-screen transition-all duration-500 ease-in-out ${slide.bgColor} ${isTransitioning ? 'opacity-90 scale-[0.98]' : 'opacity-100 scale-100'}`}>
         {renderSlideContent()}
       </div>
 
       {/* Navigation Controls */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex items-center space-x-6 bg-black/80 backdrop-blur-sm rounded-full px-6 py-3">
+      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex items-center space-x-6 bg-black/80 backdrop-blur-sm rounded-full px-6 py-3 transition-all duration-300 hover:bg-black/90">
         <button
           onClick={prevSlide}
-          className="p-2 text-white hover:text-[#00C4CC] transition-colors"
-          disabled={currentSlide === 0}
+          className="p-2 text-white hover:text-[#00C4CC] transition-all duration-300 hover:scale-110"
+          disabled={currentSlide === 0 || isTransitioning}
         >
           <ChevronLeft size={24} />
         </button>
 
         <button
           onClick={togglePlay}
-          className="p-2 text-white hover:text-[#FFD700] transition-colors"
+          className="p-2 text-white hover:text-[#FFD700] transition-all duration-300 hover:scale-110"
         >
           {isPlaying ? <Pause size={24} /> : <Play size={24} />}
         </button>
@@ -593,8 +609,8 @@ const Presentation = () => {
 
         <button
           onClick={nextSlide}
-          className="p-2 text-white hover:text-[#00C4CC] transition-colors"
-          disabled={currentSlide === slides.length - 1}
+          className="p-2 text-white hover:text-[#00C4CC] transition-all duration-300 hover:scale-110"
+          disabled={currentSlide === slides.length - 1 || isTransitioning}
         >
           <ChevronRight size={24} />
         </button>
@@ -606,9 +622,10 @@ const Presentation = () => {
           <button
             key={idx}
             onClick={() => goToSlide(idx)}
-            className={`w-3 h-3 rounded-full transition-all ${
-              idx === currentSlide ? 'bg-[#00C4CC] scale-125' : 'bg-white/50'
+            className={`w-3 h-3 rounded-full transition-all duration-300 hover:scale-125 ${
+              idx === currentSlide ? 'bg-[#00C4CC] scale-125' : 'bg-white/50 hover:bg-white/80'
             }`}
+            disabled={isTransitioning}
           />
         ))}
       </div>
@@ -616,7 +633,7 @@ const Presentation = () => {
       {/* Progress Bar */}
       <div className="absolute top-0 left-0 w-full h-1 bg-black/20">
         <div 
-          className="h-full bg-gradient-to-r from-[#00C4CC] to-[#FFD700] transition-all duration-300"
+          className="h-full bg-gradient-to-r from-[#00C4CC] to-[#FFD700] transition-all duration-700 ease-out"
           style={{ width: `${((currentSlide + 1) / slides.length) * 100}%` }}
         />
       </div>
