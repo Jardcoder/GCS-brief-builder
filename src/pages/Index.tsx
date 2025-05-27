@@ -132,9 +132,9 @@ const slides = [
   },
   {
     id: 9,
-    layout: 'sitemap',
-    title: 'High-Level Sitemap (Part 1)',
-    sections: [
+    layout: 'sitemap-combined',
+    title: 'High-Level Sitemap',
+    leftColumn: [
       {
         title: 'Home',
         items: [
@@ -154,13 +154,7 @@ const slides = [
         ]
       }
     ],
-    bgColor: 'bg-[#F8F8F8]'
-  },
-  {
-    id: 10,
-    layout: 'sitemap',
-    title: 'High-Level Sitemap (Part 2)',
-    sections: [
+    rightColumn: [
       {
         title: 'Process',
         items: ['Recruit → Match → Onboard → Follow-up']
@@ -182,10 +176,10 @@ const slides = [
         items: ['Zoho form + calendar scheduling, Direct email & phone']
       }
     ],
-    bgColor: 'bg-white'
+    bgColor: 'bg-[#F8F8F8]'
   },
   {
-    id: 11,
+    id: 10,
     layout: 'final',
     title: 'Integrations & Gating Strategy',
     sections: [
@@ -454,6 +448,56 @@ const Presentation = () => {
                   </span>
                 </div>
               ))}
+            </div>
+          </div>
+        );
+
+      case 'sitemap-combined':
+        return (
+          <div className="flex flex-col justify-center h-full px-12 md:px-24">
+            <h1 className="text-5xl md:text-7xl font-bold mb-16 text-[#333333]" style={{ fontFamily: '"Bebas Neue", sans-serif' }}>
+              {slide.title}
+            </h1>
+            <div className="grid md:grid-cols-2 gap-16">
+              <div className="space-y-12">
+                {slide.leftColumn.map((section, idx) => (
+                  <div key={idx}>
+                    <h2 className="text-3xl font-bold mb-6 text-[#00C4CC]" style={{ fontFamily: '"Bebas Neue", sans-serif' }}>
+                      {section.title}
+                    </h2>
+                    <ul className="space-y-3 ml-8">
+                      {section.items.map((item, itemIdx) => (
+                        <li key={itemIdx} className="flex items-start">
+                          <span className="text-[#FFD700] text-xl mr-4">•</span>
+                          <span className="text-lg text-[#333333]" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
+                            {item}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+              
+              <div className="space-y-12">
+                {slide.rightColumn.map((section, idx) => (
+                  <div key={idx}>
+                    <h2 className="text-3xl font-bold mb-6 text-[#00C4CC]" style={{ fontFamily: '"Bebas Neue", sans-serif' }}>
+                      {section.title}
+                    </h2>
+                    <ul className="space-y-3 ml-8">
+                      {section.items.map((item, itemIdx) => (
+                        <li key={itemIdx} className="flex items-start">
+                          <span className="text-[#FFD700] text-xl mr-4">•</span>
+                          <span className="text-lg text-[#333333]" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
+                            {item}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         );
